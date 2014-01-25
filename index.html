@@ -11,7 +11,9 @@
             -webkit-box-sizing: border-box; 
             box-sizing: border-box;
         }
-        
+        body {
+          margin: 0px auto;
+        }
         #bigGrid{
             width:602px;
             height:602px;
@@ -61,19 +63,26 @@
             border-top:1px solid #999;
             border-left:1px solid #999;
         }
-        
-        .player1{
-            background-color:red;
-            transition: background-color 0.3s ease-in-out;
-        }
         .player0{
             background-color:blue;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .player1{
+            background-color:red;
             transition: background-color 0.3s ease-in-out;
         }
  /*       .active{
             background-color:#F3F3F3;
             transition: background-color 0.3s ease-in-out;
         }*/
+        .body0 {
+          border: 5px solid #AFEEEE;
+          transition: border 0.3s ease-in-out;
+        }
+        .body1 {
+          border: 5px solid #DB7093;
+          transition: border 0.3s ease-in-out;
+        }
         .active0{
           background-color: #AFEEEE;
           transition: background-color 0.3s ease-in-out;
@@ -224,11 +233,11 @@
 
                         //playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1)?squareNumber:-1; 
 
-
-                            
                         $('.grid').removeClass('active' + otherPlayer);
-                         $('.grid.position'+playerGrid[currentPlayer]).addClass('active' + currentPlayer);
+                        $('.grid.position'+playerGrid[currentPlayer]).addClass('active' + currentPlayer);
                         
+                        $('body').removeClass('body' + otherPlayer);
+                        $('body').addClass('body' + currentPlayer);
                     }
                 });
             }
