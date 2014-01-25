@@ -219,8 +219,10 @@
                         }
                         else  playerGrid[currentPlayer] = squareNumber;
 
+                        var otherPlayer = (currentPlayer == 0)? 1:0;
+
                         //if we have a filled grid
-                        if(playerGrid[currentPlayer] != -1 && largeGrid.squares[playerGrid[currentPlayer]].colored == 9) playerGrid[currentPlayer] = -1;
+                        if(playerGrid[otherPlayer] != -1 && largeGrid.squares[playerGrid[otherPlayer]].colored == 9) playerGrid[otherPlayer] = -1;
 
 
                         currentPlayer = (currentPlayer == 1)? 0: 1;
@@ -306,7 +308,7 @@
                 winCounter = 0;
 
                 //right - left
-                currentRow = 0;
+                currentRow = 0; 
                 currentCol = 2;
 
                 while(currentRow < 3 && currentCol > -1){
