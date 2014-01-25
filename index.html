@@ -1,6 +1,8 @@
 <html>
 <head>
-	<script src="jquery.js"></script>    
+	<script src="jquery.js"></script>  
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  
     <style>
 
         /* apply a natural box layout model to all elements */
@@ -62,12 +64,19 @@
         
         .player1{
             background-color:red;
+            transition: background-color 0.3s ease-in-out;
+
         }
         .player0{
             background-color:blue;
+            transition: background-color 0.3s ease-in-out;
         }
         .active{
             background-color:#F3F3F3;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .noBorder{
+            border:none!important;
         }
         
 
@@ -88,6 +97,7 @@
 
           var currentPlayer = 0;
           var playerGrid = [-1, -1];
+          var largeGrid = new largeGrid();
 
 
             //initial population
@@ -99,22 +109,22 @@
                     $(element).append('<div class="square position'+i+'"></div>');
                 }
 
-                var grid = new smallGrid();
+                var grid = new smallGrid(gridIndex);
+                populateLargeGrid(largeGrid, grid);
 
                 $(element).children().each(function(squareIndex, element){
                     var square = new Square(this, squareIndex, gridIndex, grid);
                     populateGrid(grid, square);
                 });
             });
-
-
-
             
 
 
-            function smallGrid(type){
-                this.winner = 0;
+            function smallGrid(gridNumber){
+                this.winner = -1;
                 this.squares = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.gridNumber = gridNumber;
+                this.colored = 0;
             }
 
             function populateGrid(grid, square){
@@ -125,9 +135,17 @@
                     }
                 }
             }
+            function populateLargeGrid(bigGrid, smallGrid){
+                for(var i =0 ; i < 9; i++){
+                    if(bigGrid.squares[i] == 0){
+                        bigGrid.squares[i] = smallGrid;
+                        break;
+                    }
+                }
+            }
 
             function largeGrid(){
-                this.smallGrids = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.squares = [0, 0, 0, 0, 0, 0, 0, 0, 0];
             }
 
             function Square(domObject, squareNumber, gridNumber, parentGrid){
@@ -150,14 +168,54 @@
                     //Game Logic
 
                     //virgin square
-                    if(winner == -1 && (gridNumber == playerGrid[currentPlayer] || playerGrid[currentPlayer] == -1)){
+                    if(square.winner == -1 && (gridNumber == playerGrid[currentPlayer] || playerGrid[currentPlayer] == -1)){
                         $(this).addClass('player'+currentPlayer);
                         square.winner = currentPlayer;
-                        playerGrid[currentPlayer] = squareNumber;
-                        checkWin(parentGrid, square);
+                        square.grid.colored++;
+
+                        var haveWon = checkWin(parentGrid, square);
+
+                        if(haveWon){
+                            $($('#bigGrid').children()[square.grid.gridNumber]).children().each(function (){
+                                $(this).removeClass("player1");
+                                $(this).removeClass("player0");
+                                $(this).addClass("player"+currentPlayer);
+                                $(this).addClass("noBorder");
+
+                            });
+                            square.grid.winner = currentPlayer;
+
+                            if(playerGrid[currentPlayer] == square.grid.gridNumber || largeGrid.squares[squareNumber].winner == -1 || largeGrid.squares[playerGrid[currentPlayer]].colored == 9)
+                                playerGrid[currentPlayer] = -1;
+
+
+                            var winner = checkWin(largeGrid, square.grid.gridNumber);   
+
+                            if(winner){
+                                alert("you have won");
+                            }
+
+                        }
+                        playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1 || largeGrid.squares[playerGrid[currentPlayer]].colored == 9) ? squareNumber : -1;
+
+
                         currentPlayer = (currentPlayer == 1)? 0: 1;
+                        
+                        
+                        
+
+                        //playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1)?squareNumber:-1; 
+
+
+
+                            
                         $('.grid').removeClass('active');
-                        $('.grid.position'+playerGrid[currentPlayer]).addClass('active');
+                         $('.grid.position'+playerGrid[currentPlayer]).addClass('active');
+                        
+
+                        
+
+
                     }
                 });
             }
@@ -165,183 +223,257 @@
 
 
 
-            function checkWin(grid, square){
-                var winCounter = 0; 
+           function checkWin(grid, square){
+                var winCounter = 1; 
                 var rowNumber = Math.floor(square.squareNumber/3);
                 var colNumber = square.squareNumber%3;
 
 
-
+                //console.log("Col: "+colNumber);
+                //console.log("Row: "+rowNumber);
 
                 //horizontal stuff
                 for(var i = colNumber+1; i < 3; i++){   //right
-                    console.log(square.squareNumber+i);
-                    if(grid.squares[square.squareNumber+i].winner == currentPlayer)
+                    if(grid.squares[rowNumber*3+i].winner == currentPlayer)
                         winCounter++;
                     else break;
                 }
                 for(var i = colNumber-1; i > -1; i--){   //left
-                    console.log(square.squareNumber-i);
-                    if(grid.squares[square.squareNumber-i].winner == currentPlayer)
+                    if(grid.squares[rowNumber*3+i].winner == currentPlayer)
                         winCounter++;
                     else break;
                 }
-                if(winCounter == 3) alert("Someone Won!!!!");
-                winCounter = 0;
+                if(winCounter == 3) return true;
+                winCounter = 1;
 
-
+                
                 //vertical stuff
                 for(var i = rowNumber+1; i < 3; i++){   //down
-                    console.log(square.squareNumber+i*3);
-                    if(grid.squares[square.squareNumber+i].winner == currentPlayer)
+                    
+                    if(grid.squares[i*3+colNumber].winner == currentPlayer){
                         winCounter++;
+                    }
                     else break;
                 }
                 for(var i = rowNumber-1; i > -1; i--){   //up
-                    console.log(square.squareNumber-i*3);
-                    if(grid.squares[square.squareNumber-i].winner == currentPlayer)
+                    if(grid.squares[i*3+colNumber].winner == currentPlayer){
                         winCounter++;
+                    }
                     else break;
                 }
-                if(winCounter == 3) alert("Someone Won!!!!");
+                if(winCounter == 3) return true;
                 winCounter = 0;
 
 
-                 /*//left - right
+               //left - right
 
-                var currentRow = rowNumber;
-                var currentCol = colNumber;
+                var currentRow = 0;
+                var currentCol = 0;
 
                 while(currentRow < 3 && currentCol < 3){
-                    if(grid.sqaures[3*currentRow + currentCol].winner == currentPlayer){
+                    if(grid.squares[3*currentRow + currentCol].winner == currentPlayer){
                         winCounter++;
                     }
-                    else break;
                     currentCol++;
                     currentRow++;
                 }
-                while(currentRow > -1 && currentCol > -1){
-                    if(grid.sqaures[3*currentRow + currentCol] == currentPlayer){
-                        winCounter++;
-                    }
-                    else break;
-                    currentCol--;
-                    currentRow--;
-                }
-                if(winCounter == 3) alert("Someone Won!!!!");
+                if(winCounter == 3) return true;
                 winCounter = 0;
 
                 //right - left
-                currentRow = rowNumber;
-                currentCol = colNumber;
+                currentRow = 0;
+                currentCol = 2;
 
                 while(currentRow < 3 && currentCol > -1){
-                    if(grid.sqaures[3*currentRow + currentCol] == currentPlayer){
+                    console.log(3*currentRow + currentCol);
+                    if(grid.squares[3*currentRow + currentCol].winner == currentPlayer){
                         winCounter++;
                     }
-                    else break;
                     currentCol--;
                     currentRow++;
                 }
-                while(currentRow > -1 && currentCol < 3){
-                    if(grid.sqaures[3*currentRow + currentCol] == currentPlayer){
-                        winCounter++;
-                    }
-                    else break;
-                    currentCol++;
-                    currentRow--;
-                }
-                 if(winCounter == 3) alert("Someone Won!!!!"); */
+                if(winCounter == 3) return true;
 
+                return false;
+
+            }
+
+            function won(grid){
                
 
             }
 
- /*function checkWin(smallGrid, square){
+/*
+function checkWin(smallGrid, square, largeCoord){
           var smallCoord = square.squareNumber;
-          console.log(smallGrid.squares[smallCoord].winner);
+          console.log(largeCoord);
 
-          if(smallCoord==0)
+         if(smallCoord==0)
           {
             if(smallGrid.squares[1].winner==currentPlayer && smallGrid.squares[2].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[3].winner==currentPlayer && smallGrid.squares[6].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[4].winner==currentPlayer && smallGrid.squares[8].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==1)
           {
             if(smallGrid.squares[0].winner==currentPlayer && smallGrid.squares[2].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[4].winner==currentPlayer && smallGrid.squares[7].winnner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==2)
           {
             if(smallGrid.squares[0].winner==currentPlayer && smallGrid.squares[1].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[5].winner==currentPlayer && smallGrid.squares[8].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[4].winner==currentPlayer && smallGrid.squares[6].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==3)
           {
             if(smallGrid.squares[4].winner==currentPlayer && smallGrid.squares[5].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[0].winner==currentPlayer && smallGrid.squares[6].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==4)
           {
             if(smallGrid.squares[3].winner==currentPlayer && smallGrid.squares[5].winner==currentPlayer){
-              smallGrid.winner = currentPlayer; alert("Hooray!");
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             }
             if(smallGrid.squares[1].winner==currentPlayer && smallGrid.squares[7].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[0].winner==currentPlayer && smallGrid.squares[8].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[2].winner==currentPlayer && smallGrid.squares[6].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==5)
           {
             if(smallGrid.squares[3].winner==currentPlayer && smallGrid.squares[4].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[2].winner==currentPlayer && smallGrid.squares[8].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==6)
           {
             if(smallGrid.squares[0].winner==currentPlayer && smallGrid.squares[3].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[7].winner==currentPlayer && smallGrid.squares[8].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[4].winner==currentPlayer && smallGrid.squares[2].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==7)
           {
             if(smallGrid.squares[6].winner==currentPlayer && smallGrid.squares[8].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[1].winner==currentPlayer && smallGrid.squares[4].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
           }
           if(smallCoord==8)
           {
             if(smallGrid.squares[6].winner==currentPlayer && smallGrid.squares[7].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[2].winner==currentPlayer && smallGrid.squares[5].winner==currentPlayer)
-              smallGrid.winner = currentPlayer;
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);}
             if(smallGrid.squares[0].winner==currentPlayer && smallGrid.squares[4].winner==currentPlayer)
-              smallGrid.winner = currentPlayer; 
+              {smallGrid.winner = currentPlayer; smallGridWon(smallGrid, currentPlayer);} 
           }
-          
-        }*/
-          
-        
+          if(smallGrid.winner == currentPlayer)
+          {
+            if(largeCoord==0)
+            {
+              if(largeGrid.smallGrid[1].winner ==currentPlayer && largeGrid.smallGrid[2].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[3].winner ==currentPlayer && largeGrid.smallGrid[6].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[4].winner ==currentPlayer && largeGrid.smallGrid[8].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==1)
+            {
+              if(largeGrid.smallGrid[0].winner ==currentPlayer && largeGrid.smallGrid[2].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[4].winner ==currentPlayer && largeGrid.smallGrid[7].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==2)
+            {
+              if(largeGrid.smallGrid[0].winner ==currentPlayer && largeGrid.smallGrid[1].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[5].winner ==currentPlayer && largeGrid.smallGrid[8].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[4].winner ==currentPlayer && largeGrid.smallGrid[6].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==3)
+            {
+              if(largeGrid.smallGrid[4].winner ==currentPlayer && largeGrid.smallGrid[5].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[0].winner ==currentPlayer && largeGrid.smallGrid[6].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==4)
+            {
 
+            if(largeGrid.smallGrid[3].winner ==currentPlayer && largeGrid.smallGrid[5].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[1].winner ==currentPlayer && largeGrid.smallGrid[7].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[0].winner ==currentPlayer && largeGrid.smallGrid[8].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[2].winner ==currentPlayer && largeGrid.smallGrid[6].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==5)
+            {
+              if(largeGrid.smallGrid[3].winner ==currentPlayer && largeGrid.smallGrid[4].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[2].winner ==currentPlayer && largeGrid.smallGrid[8].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==6)
+            {
+              if(largeGrid.smallGrid[0].winner ==currentPlayer && largeGrid.smallGrid[3].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[7].winner ==currentPlayer && largeGrid.smallGrid[8].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[4].winner ==currentPlayer && largeGrid.smallGrid[2].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==7)
+            {
+              if(largeGrid.smallGrid[6].winner ==currentPlayer && largeGrid.smallGrid[8].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[1].winner ==currentPlayer && largeGrid.smallGrid[4].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+            if(largeCoord==8)
+            {
+              if(largeGrid.smallGrid[6].winner ==currentPlayer && largeGrid.smallGrid[7].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[2].winner ==currentPlayer && largeGrid.smallGrid[5].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+              if(largeGrid.smallGrid[0].winner ==currentPlayer && largeGrid.smallGrid[4].winner ==currentPlayer)
+                {win=currentPlayer; largeGridWon(currentPlayer);}
+            }
+          }
+        }
+          */
+        /*
+        function smallGridWon(grid, player){
+            //other player
+            var otherPlayer = (currentPlayer == 1)? 0: 1;
+            console.log("grid  Number: "+grid.gridNumber);
+            $($('#bigGrid').children()[3]).addClass("player"+currentPlayer);
+            //$('#bigGrid').eq(grid.gridNumber).addClass("player"+currentPlayer);
+            //$(grid.domObject).addClass("noBorder");
+        }*/
 
         });
 
