@@ -1,6 +1,6 @@
 <html>
 <head>
-	<script src="jquery.js"></script> 
+        <script src="jquery.js"></script>  
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
   
@@ -11,6 +11,9 @@
             -moz-box-sizing: border-box; 
             -webkit-box-sizing: border-box; 
             box-sizing: border-box;
+        }
+        body {
+          margin: 0px auto;
         }
         
         #bigGrid{
@@ -25,7 +28,7 @@
             display:inline-block;
             border-width:2px!important;
             padding:8px;
-            
+            margin-top:10px;
         }
         
         .square{
@@ -62,20 +65,29 @@
             border-top:1px solid #999;
             border-left:1px solid #999;
         }
+        .player0{
+            background-color:#3498db;
+            transition: background-color 0.3s ease-in-out;
+        }
         
         .player1{
-            background-color:red;
+            background-color:#2ecc71;
             transition: background-color 0.3s ease-in-out;
 
-        }
-        .player0{
-            background-color:blue;
-            transition: background-color 0.3s ease-in-out;
         }
         .active{
             background-color:#F3F3F3;
             transition: background-color 0.3s ease-in-out;
         }
+        .body0 {
+          border-top: 5px solid #AFEEEE;
+          transition: border 0.3s ease-in-out;
+        }
+        .body1 {
+          border-top: 5px solid #98FB98;
+          transition: border 0.3s ease-in-out;
+        }
+
         .noBorder{
             border:none!important;
         }
@@ -99,15 +111,12 @@
 
 
       $(document).ready(function(){
-        function send(currentPlayer, square){
-             socket.emit('click', { player: (currentPlayer == 1)?0:1, smallGrid: square.gridNumber, squareNumber: s.squareNumber});
-        }
 
-        var socket = io.connect('http://ticception.herokuapp.com/');
+
+        /*var socket = io.connect('http://ticception.herokuapp.com/');
           socket.on('click', function (data) {
-
-            $(largeGrid.squares[data.smallGrid].squares[data.squareNumber]).trigger();
-          });
+            console.log(data);
+          });*/
 
           var currentPlayer = 0;
           var playerGrid = [-1, -1];
@@ -178,8 +187,6 @@
 
 
                 $(this.domObject).click(function(){
-
-                    send(currentPlayer, square);
                     
                     //Game Logic
 
@@ -207,8 +214,7 @@
                             if(square.gridNumber == playerGrid[otherPlayer]){
                                     playerGrid[otherPlayer] = -1;
                             }
-                            //if we have a filled grid
-                            if(playerGrid[otherPlayer] != -1 && largeGrid.squares[playerGrid[otherPlayer]].colored == 9) playerGrid[otherPlayer] = -1;
+
 
                             var winner = checkWin(largeGrid, square.grid);   
 
@@ -224,34 +230,27 @@
                         }
                         else  playerGrid[currentPlayer] = squareNumber;
 
-                        var otherPlayer = (currentPlayer == 0)? 1:0;
-
                         //if we have a filled grid
-                        if(playerGrid[otherPlayer] != -1 && largeGrid.squares[playerGrid[otherPlayer]].colored == 9) playerGrid[otherPlayer] = -1;
+                        if(playerGrid[currentPlayer] != -1 && largeGrid.squares[playerGrid[currentPlayer]].colored == 9) playerGrid[currentPlayer] = -1;
 
 
                         currentPlayer = (currentPlayer == 1)? 0: 1;
-                        
-                        
-                        
-
+                        otherPlayer = (currentPlayer == 1)? 0: 1;
+                      
                         //playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1)?squareNumber:-1; 
 
-
-
-                            
                         $('.grid').removeClass('active');
-                         $('.grid.position'+playerGrid[currentPlayer]).addClass('active');
+                        $('.grid.position'+playerGrid[currentPlayer]).addClass('active');
                         
-
-                        
-
-
+                        $('body').removeClass('body' + otherPlayer);
+                        $('body').addClass('body' + currentPlayer);
                     }
                 });
             }
 
-            
+            function send(currentPlayer, square){
+                //socket.emit('click', { player: currentPlayer, squareX: squareNumber, squareY: square.gridNumber});
+            }
 
            function checkWin(grid, square){
                 var winCounter = 1; 
@@ -311,7 +310,7 @@
                 winCounter = 0;
 
                 //right - left
-                currentRow = 0; 
+                currentRow = 0;
                 currentCol = 2;
 
                 while(currentRow < 3 && currentCol > -1){
