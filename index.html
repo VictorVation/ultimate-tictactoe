@@ -101,10 +101,10 @@
       $(document).ready(function(){
 
 
-        /*var socket = io.connect('http://ticception.herokuapp.com/');
+        var socket = io.connect('http://ticception.herokuapp.com/');
           socket.on('click', function (data) {
             console.log(data);
-          });*/
+          });
 
           var currentPlayer = 0;
           var playerGrid = [-1, -1];
@@ -175,6 +175,8 @@
 
 
                 $(this.domObject).click(function(){
+
+                    send(currentPlayer, square);
                     
                     //Game Logic
 
@@ -247,7 +249,7 @@
             }
 
             function send(currentPlayer, square){
-                //socket.emit('click', { player: currentPlayer, squareX: squareNumber, squareY: square.gridNumber});
+                socket.emit('click', { player: currentPlayer, squareX: squareNumber, squareY: square.gridNumber});
             }
 
            function checkWin(grid, square){
