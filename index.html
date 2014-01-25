@@ -99,11 +99,13 @@
 
 
       $(document).ready(function(){
-
+        function send(currentPlayer, square){
+             socket.emit('click', { player: (currentPlayer == 1)?0:1, square: square});
+        }
 
         var socket = io.connect('http://ticception.herokuapp.com/');
           socket.on('click', function (data) {
-            console.log(data);
+            $(data.square.domObject).trigger();
           });
 
           var currentPlayer = 0;
@@ -248,9 +250,7 @@
                 });
             }
 
-            function send(currentPlayer, square){
-                socket.emit('click', { player: currentPlayer, squareX: square.squareNumber, squareY: square.gridNumber});
-            }
+            
 
            function checkWin(grid, square){
                 var winCounter = 1; 
