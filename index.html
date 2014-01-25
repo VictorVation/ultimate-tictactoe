@@ -2,6 +2,7 @@
 <head>
 	<script src="jquery.js"></script>  
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
   
     <style>
 
@@ -93,7 +94,17 @@
     </div>
     
     <script type="text/javascript">
+        
+
+
+
       $(document).ready(function(){
+
+
+        /*var socket = io.connect('http://ticception.herokuapp.com/');
+          socket.on('click', function (data) {
+            console.log(data);
+          });*/
 
           var currentPlayer = 0;
           var playerGrid = [-1, -1];
@@ -123,7 +134,7 @@
             function smallGrid(gridNumber){
                 this.winner = -1;
                 this.squares = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-                this.gridNumber = gridNumber;
+                this.squareNumber = gridNumber;
                 this.colored = 0;
             }
 
@@ -176,7 +187,7 @@
                         var haveWon = checkWin(parentGrid, square);
 
                         if(haveWon){
-                            $($('#bigGrid').children()[square.grid.gridNumber]).children().each(function (){
+                            $($('#bigGrid').children()[square.grid.squareNumber]).children().each(function (){
                                 $(this).removeClass("player1");
                                 $(this).removeClass("player0");
                                 $(this).addClass("player"+currentPlayer);
@@ -193,7 +204,7 @@
                             }
 
 
-                            var winner = checkWin(largeGrid, square.grid.gridNumber);   
+                            var winner = checkWin(largeGrid, square.grid);   
 
                             if(winner){
                                 alert("you have won");
@@ -232,7 +243,9 @@
                 });
             }
 
-
+            function send(currentPlayer, square){
+                //socket.emit('click', { player: currentPlayer, squareX: squareNumber, squareY: square.gridNumber});
+            }
 
            function checkWin(grid, square){
                 var winCounter = 1; 
@@ -309,10 +322,7 @@
 
             }
 
-            function won(grid){
-               
-
-            }
+            
 
 /*
 function checkWin(smallGrid, square, largeCoord){
