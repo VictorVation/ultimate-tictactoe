@@ -249,7 +249,7 @@
             }
 
             function send(currentPlayer, square){
-                socket.emit('click', { player: currentPlayer, squareX: squareNumber, squareY: square.gridNumber});
+                socket.emit('click', { player: currentPlayer, squareX: square.squareNumber, squareY: square.gridNumber});
             }
 
            function checkWin(grid, square){
