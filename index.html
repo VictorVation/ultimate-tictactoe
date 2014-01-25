@@ -65,15 +65,22 @@
         .player1{
             background-color:red;
             transition: background-color 0.3s ease-in-out;
-
         }
         .player0{
             background-color:blue;
             transition: background-color 0.3s ease-in-out;
         }
-        .active{
+ /*       .active{
             background-color:#F3F3F3;
             transition: background-color 0.3s ease-in-out;
+        }*/
+        .active0{
+          background-color: #AFEEEE;
+          transition: background-color 0.3s ease-in-out;
+        }
+        .active1{
+          background-color: #DB7093;
+          transition: background-color 0.3s ease-in-out;
         }
         .noBorder{
             border:none!important;
@@ -212,22 +219,16 @@
 
 
                         currentPlayer = (currentPlayer == 1)? 0: 1;
-                        
-                        
+                        otherPlayer = (currentPlayer == 1)? 0: 1;
                         
 
                         //playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1)?squareNumber:-1; 
 
 
-
                             
-                        $('.grid').removeClass('active');
-                         $('.grid.position'+playerGrid[currentPlayer]).addClass('active');
+                        $('.grid').removeClass('active' + otherPlayer);
+                         $('.grid.position'+playerGrid[currentPlayer]).addClass('active' + currentPlayer);
                         
-
-                        
-
-
                     }
                 });
             }
