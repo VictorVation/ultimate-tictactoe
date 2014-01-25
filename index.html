@@ -185,8 +185,12 @@
                             });
                             square.grid.winner = currentPlayer;
 
-                            if(playerGrid[currentPlayer] == square.grid.gridNumber || largeGrid.squares[squareNumber].winner == -1 || largeGrid.squares[playerGrid[currentPlayer]].colored == 9)
-                                playerGrid[currentPlayer] = -1;
+                            //check to see if other players grid has been taken
+                            var otherPlayer = (currentPlayer == 0)? 1:0;
+
+                            if(square.gridNumber == playerGrid[otherPlayer]){
+                                    playerGrid[otherPlayer] = -1;
+                            }
 
 
                             var winner = checkWin(largeGrid, square.grid.gridNumber);   
@@ -196,7 +200,15 @@
                             }
 
                         }
-                        playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1 || largeGrid.squares[playerGrid[currentPlayer]].colored == 9) ? squareNumber : -1;
+
+                        //update this player's next grid
+                        if(largeGrid.squares[square.squareNumber].winner != -1){
+                                playerGrid[currentPlayer] = -1;
+                        }
+                        else  playerGrid[currentPlayer] = squareNumber;
+
+                        //if we have a filled grid
+                        if(playerGrid[currentPlayer] != -1 && largeGrid.squares[playerGrid[currentPlayer]].colored == 9) playerGrid[currentPlayer] = -1;
 
 
                         currentPlayer = (currentPlayer == 1)? 0: 1;
@@ -219,7 +231,6 @@
                     }
                 });
             }
-
 
 
 
