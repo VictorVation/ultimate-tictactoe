@@ -100,7 +100,7 @@
 
       $(document).ready(function(){
         function send(currentPlayer, square){
-             socket.emit('click', { player: (currentPlayer == 1)?0:1, smallGrid: square.gridNumber, squareNumber: s.squareNumber});
+             socket.emit('click', { player: (currentPlayer == 1)?0:1, smallGrid: square.gridNumber, squareNumber: square.squareNumber});
         }
 
         var socket = io.connect('http://ticception.herokuapp.com/');
