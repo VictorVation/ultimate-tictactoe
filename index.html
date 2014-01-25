@@ -1,0 +1,209 @@
+<html>
+<head>
+	<script src="jquery.js"></script>    
+    <style>
+
+        /* apply a natural box layout model to all elements */
+        *, *:before, *:after {
+            -moz-box-sizing: border-box; 
+            -webkit-box-sizing: border-box; 
+            box-sizing: border-box;
+        }
+        
+        #bigGrid{
+            width:602px;
+            height:602px;
+            margin:0 auto;
+        }
+        
+        .grid{
+            width:200px;
+            height:200px;
+            display:inline-block;
+            border-width:2px!important;
+            padding:8px;
+            
+        }
+        
+        .square{
+            width:60px;
+            height:60px;
+            display:inline-block;
+        }
+        
+        .position1{
+            border-bottom:1px solid #999;
+        }
+        .position0{
+            border-bottom:1px solid #999;
+            border-right:1px solid #999;
+        }
+        .position2{
+            border-bottom:1px solid #999;
+            border-left:1px solid #999;
+        }
+        .position3{
+            border-right:1px solid #999;
+        }
+        .position5{
+            border-left:1px solid #999;
+        }
+        .position6{
+            border-top:1px solid #999;
+            border-right:1px solid #999;
+        }
+        .position7{
+            border-top:1px solid #999;
+        }
+        .position8{
+            border-top:1px solid #999;
+            border-left:1px solid #999;
+        }
+        
+        .player1{
+            background-color:red;
+        }
+        .player0{
+            background-color:blue;
+        }
+        .active{
+            background-color:#666;
+        }
+        
+
+    </style>
+</head>
+
+
+<body>
+
+
+
+    <div id="bigGrid">
+
+    </div>
+    
+    <script type="text/javascript">
+      $(document).ready(function(){
+
+          var currentPlayer = 0;
+          var playerGrid = [-1, -1];
+
+
+            //initial population
+            for(var i = 0; i < 9; i++){
+                $('#bigGrid').append('<div class="grid position'+i+'"></div>');
+            }
+            $('.grid').each(function(gridIndex, element){
+                for(var i = 0; i < 9; i++){
+                    $(element).append('<div class="square position'+i+'"></div>');
+                }
+
+                var grid = new smallGrid();
+
+                $(element).children().each(function(squareIndex, element){
+                    var square = new Square(this, squareIndex, gridIndex, grid);
+                    populateGrid(grid, square);
+                });
+            });
+
+
+
+            
+
+
+            function smallGrid(type){
+                this.winner = 0;
+                this.squares = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+            }
+
+            function populateGrid(grid, square){
+                for(var i =0 ; i < 9; i++){
+                    if(grid.squares[i] == 0){
+                        grid.squares[i] = square;
+                        break;
+                    }
+                }
+            }
+
+            function Square(domObject, squareNumber, gridNumber, parentGrid){
+                this.domObject = domObject;
+                this.grid = parentGrid;
+                this.squareNumber = squareNumber;
+                this.gridNumber = gridNumber;
+                this.winner = -1;
+
+                //to be used in click function
+                //var grid = parentGrid;
+                //var squareNumber = squareNumber;
+                //var gridNumber = gridNumber;
+                var winner = this.winner;
+                var square = this;
+
+
+                $(this.domObject).click(function(){
+                    
+                    //Game Logic
+
+                    //virgin square
+                    if(winner == -1 && (gridNumber == playerGrid[currentPlayer] || playerGrid[currentPlayer] == -1)){
+                        console.log('hello');
+                        $(this).addClass('player'+currentPlayer);
+                        winner = currentPlayer;
+                        playerGrid[currentPlayer] = squareNumber;
+                        checkWin(parentGrid, square);
+                        currentPlayer = (currentPlayer == 1)? 0: 1;
+                        $('.grid').removeClass('active');
+                        $('.grid.position'+playerGrid[currentPlayer]).addClass('active');
+                    }
+                });
+            }
+
+            function checkWin(grid, square){
+                var winCounter = 0; 
+
+                //horizontal stuff
+                for(var i = (square.squareNumber%3)+1; i < 3; i++){   //right
+                    if(grid.squares[i].winner == currentPlayer)
+                        winCounter++;
+                    else break;
+                }
+                for(var i = (square.squareNumber%3)-1; i > -1; i--){   //left
+                    if(grid.squares[i].winner == currentPlayer)
+                        winCounter++;
+                    else break;
+                }
+                if(winCounter == 3) alert("Someone Won!!!!");
+                winCounter = 0;
+                
+
+                //vertical stuff
+                for(var i = (square.squareNumber%3)+1; i < 3; i++){   //right
+                    if(grid.squares[i].winner == currentPlayer)
+                        winCounter++;
+                    else break;
+                }
+                for(var i = (square.squareNumber%3)-1; i > -1; i--){   //left
+                    if(grid.squares[i].winner == currentPlayer)
+                        winCounter++;
+                    else break;
+                }
+                if(winCounter == 3) alert("Someone Won!!!!");
+                winCounter = 0;
+
+
+            }
+
+
+
+        });
+
+
+
+</script>
+
+</body>
+
+
+
+</html>
