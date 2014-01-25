@@ -100,12 +100,13 @@
 
       $(document).ready(function(){
         function send(currentPlayer, square){
-             socket.emit('click', { player: (currentPlayer == 1)?0:1, square: square});
+             socket.emit('click', { player: (currentPlayer == 1)?0:1, smallGrid: square.gridNumber, squareNumber: s.squareNumber});
         }
 
         var socket = io.connect('http://ticception.herokuapp.com/');
           socket.on('click', function (data) {
-            $(data.square.domObject).trigger();
+
+            $(largeGrid.squares[data.smallGrid].squares[data.squareNumber]).trigger();
           });
 
           var currentPlayer = 0;
