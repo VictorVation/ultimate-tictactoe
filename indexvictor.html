@@ -1,8 +1,7 @@
 <html>
 <head>
-        <script src="jquery.js"></script>  
+	<script src="jquery.js"></script>  
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
   
     <style>
 
@@ -15,7 +14,6 @@
         body {
           margin: 0px auto;
         }
-        
         #bigGrid{
             width:602px;
             height:602px;
@@ -69,16 +67,14 @@
             background-color:blue;
             transition: background-color 0.3s ease-in-out;
         }
-        
         .player1{
             background-color:red;
             transition: background-color 0.3s ease-in-out;
-
         }
-        .active{
+ /*       .active{
             background-color:#F3F3F3;
             transition: background-color 0.3s ease-in-out;
-        }
+        }*/
         .body0 {
           border: 5px solid #AFEEEE;
           transition: border 0.3s ease-in-out;
@@ -95,7 +91,6 @@
           background-color: #DB7093;
           transition: background-color 0.3s ease-in-out;
         }
-
         .noBorder{
             border:none!important;
         }
@@ -114,17 +109,7 @@
     </div>
     
     <script type="text/javascript">
-        
-
-
-
       $(document).ready(function(){
-
-
-        /*var socket = io.connect('http://ticception.herokuapp.com/');
-          socket.on('click', function (data) {
-            console.log(data);
-          });*/
 
           var currentPlayer = 0;
           var playerGrid = [-1, -1];
@@ -154,7 +139,7 @@
             function smallGrid(gridNumber){
                 this.winner = -1;
                 this.squares = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-                this.squareNumber = gridNumber;
+                this.gridNumber = gridNumber;
                 this.colored = 0;
             }
 
@@ -207,7 +192,7 @@
                         var haveWon = checkWin(parentGrid, square);
 
                         if(haveWon){
-                            $($('#bigGrid').children()[square.grid.squareNumber]).children().each(function (){
+                            $($('#bigGrid').children()[square.grid.gridNumber]).children().each(function (){
                                 $(this).removeClass("player1");
                                 $(this).removeClass("player0");
                                 $(this).addClass("player"+currentPlayer);
@@ -224,7 +209,7 @@
                             }
 
 
-                            var winner = checkWin(largeGrid, square.grid);   
+                            var winner = checkWin(largeGrid, square.grid.gridNumber);   
 
                             if(winner){
                                 alert("you have won");
@@ -244,8 +229,9 @@
 
                         currentPlayer = (currentPlayer == 1)? 0: 1;
                         otherPlayer = (currentPlayer == 1)? 0: 1;
-                      
-                        //playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1)?squareNumber:-1; 
+                        
+
+                        playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1)?squareNumber:-1; 
 
                         $('.grid').removeClass('active' + otherPlayer);
                         $('.grid.position'+playerGrid[currentPlayer]).addClass('active' + currentPlayer);
@@ -256,9 +242,7 @@
                 });
             }
 
-            function send(currentPlayer, square){
-                //socket.emit('click', { player: currentPlayer, squareX: squareNumber, squareY: square.gridNumber});
-            }
+
 
            function checkWin(grid, square){
                 var winCounter = 1; 
@@ -335,7 +319,10 @@
 
             }
 
-            
+            function won(grid){
+               
+
+            }
 
 /*
 function checkWin(smallGrid, square, largeCoord){
