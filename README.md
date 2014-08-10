@@ -1,6 +1,6 @@
 <a style="outline: none;" href="http://victorszeto.com/ultimate-tictactoe"><img width="100%" src="app/logo.png"></a>
 
-It's Tic-Tac-Toe, but with nested tic-tac-toe boards in each square, 'thus making it ultimate](http://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/). Play it here: [Ultimate TicTacToe](http://www.victorszeto.com/ultimate-tictactoe).
+It's Tic-Tac-Toe, but with nested tic-tac-toe boards in each square, thus [making it ultimate](http://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/). Play it here: [Ultimate TicTacToe](http://www.victorszeto.com/ultimate-tictactoe).
 
 Originally created in 24 hours for the Waterloo Facebook Hackathon, see the original repo at [shahmeernavid/Facebook-Hackathon-2014-TicCeption](https://github.com/shahmeernavid/Facebook-Hackathon-2014-TicCeption).
 
