@@ -1,0 +1,40 @@
+<html>
+<head>
+  <title>Ultimate TicTacToe</title>
+  <!-- build:css css/style.min.css -->
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- endbuild -->
+</head>
+<body class="body0">
+  <div class="overlay"></div>
+  <div class="instructions"></div>
+  <div class="logo">
+    <img width="300px" src="logo.png">
+  </div>
+  <div id="bigGrid"></div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Oh My God!</h3>
+    </div>
+    <div class="panel-body">
+      <h3 class="panel-message"></h3>
+    </div>
+  </div>
+  <div class="panel panel-default info">
+    <div class="panel-heading info">
+      <h3 class="panel-title info">Read this or Fail!</h3>
+    </div>
+    <div class="panel-body info">
+      <p>Player 1 is blue, player 2 is green.
+  A player can only make their next move in the square of the bigger grid that corresponds to the small grid he or she last played in.
+  When a player is sent to a square that is already filled, he or she can choose play anywhere.</p>
+      <button type="button" id="startButton" class="btn btn-danger">Start Foo!</button>
+    </div>
+  </div>
+  <!-- build:js js/app.min.js -->
+  <script src="js/jquery.js"></script>
+  <script src="js/app.js"></script>
+  <!-- endbuild -->
+</body>
+</html>

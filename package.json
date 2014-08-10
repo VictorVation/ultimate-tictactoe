@@ -1,0 +1,31 @@
+{
+  "name": "Ultimate-TicTacToe",
+  "version": "0.2.0",
+  "description": "Ultimate Tic Tac Toe.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VictorVation/Facebook-Hackathon-2014-TicCeption.git"
+  },
+  "author": "VictorVation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VictorVation/ultimatetictactoe/issues"
+  },
+  "homepage": "https://github.com/VictorVation/ultimatetictactoe",
+  "dependencies": {
+    "del": "^0.1.1",
+    "gulp": "^3.8.7",
+    "gulp-autoprefixer": "0.0.8",
+    "gulp-csso": "^0.2.9",
+    "gulp-if": "^1.2.4",
+    "gulp-load-plugins": "^0.5.3",
+    "gulp-minify-html": "^0.1.4",
+    "gulp-size": "^1.0.0",
+    "gulp-uglify": "^0.3.1",
+    "gulp-useref": "^0.6.0",
+    "run-sequence": "^0.3.6"
+  }
+}
