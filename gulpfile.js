@@ -23,6 +23,11 @@ gulp.task('build', function() {
     .pipe(assets)
     .on('error', console.error.bind(console))
     .pipe($.if('*.js', $.uglify({preserveComments: 'some'})))
+    .pipe($.if('*.css', $.uncss({
+      html: ['app/index.html'],
+      ignore: ['.grid', '.square',
+       /active\d/, /body\d/, /position\d/, /player\d/]
+    })))
     .pipe($.if('*.css', $.csso()))
     .pipe(assets.restore())
     .pipe($.useref())

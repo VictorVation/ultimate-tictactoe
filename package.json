@@ -25,6 +25,7 @@
     "gulp-minify-html": "^0.1.4",
     "gulp-size": "^1.0.0",
     "gulp-uglify": "^0.3.1",
+    "gulp-uncss": "^0.4.5",
     "gulp-useref": "^0.6.0",
     "run-sequence": "^0.3.6"
   }
