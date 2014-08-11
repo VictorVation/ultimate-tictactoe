@@ -12,5 +12,5 @@ Originally created in 24 hours for the Waterloo Facebook Hackathon, see the orig
 3. Make changes in the `app` directory.
 4. When you're done, build the project by using the default gulp task: `gulp`
 5. Commit everything. `git commit -am "helpful commit message"`
-6. Push `dist` folder to `gh-pages` to deploy: 
+6. Push the `dist` folder to `gh-pages` to deploy: 
 `git subtree push --prefix dist origin gh-pages`.
