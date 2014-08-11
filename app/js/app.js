@@ -128,8 +128,8 @@ function Square(domObject, squareNumber, gridNumber, parentGrid){
 
             //playerGrid[currentPlayer] = (largeGrid.squares[squareNumber].winner == -1)?squareNumber:-1;
 
-            $('.grid').removeClass('active');
-            $('.grid.position'+playerGrid[currentPlayer]).addClass('active');
+            $('.grid').removeClass('active' + otherPlayer);
+            $('.grid.position'+playerGrid[currentPlayer]).addClass('active' + currentPlayer);
 
             $('body').removeClass('body' + otherPlayer);
             $('body').addClass('body' + currentPlayer);

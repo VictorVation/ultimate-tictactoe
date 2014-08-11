@@ -98,6 +98,14 @@
       background-color:#F3F3F3;
       transition: background-color 0.3s ease-in-out;
     }
+    .active0 {
+      background-color: rgba(76, 155, 216, 0.2);
+      transition: background-color 0.3s ease-in-out;
+    }
+    .active1 {
+      background-color: rgba(107, 195, 111, 0.2);
+      transition: background-color 0.3s ease-in-out;
+    }
     .body0 {
       border-top: 10px solid #4C9BD8;
       transition: border 0.3s ease-in-out;
